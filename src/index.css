@@ -1,113 +1,176 @@
-/* src/index.css */
+/* KLINIK VION - MASTER STYLESHEET 
+  Optimized for Bootstrap 5.3 Dark Mode
+*/
 
-/* Definisikan Variabel Warna dari Logo/Aset */
 :root {
-  --vion-primary: #8199C6;    /* Biru Utama */
-  --vion-primary-dark: #5C74A6; /* Biru Tua untuk Teks Latar Terang */
-  --vion-bg-light: #F7FAFD;   /* Latar Belakang Sangat Muda */
-  --vion-text-dark: #1A1A1A;  /* Teks Utama Hitam */
-  --vion-text-muted: #7A8699; /* Teks Sekunder Abu */
-  --vion-white: #FFFFFF;
+    --vion-primary: #8199C6;
+    --vion-yolk: #FFB800;
 }
 
-/* Gaya Global */
-body {
-  margin: 0;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  background-color: var(--vion-bg-light);
-  color: var(--vion-text-dark);
-  scroll-behavior: smooth; /* Efek scroll halus saat klik menu */
+/* --- DARK MODE VARIABLES --- */
+[data-bs-theme='dark'] {
+    --vion-bg-light: #0f172a;    /* Navy sangat gelap (Slate 900) */
+    --vion-white: #1e293b;       /* Navy medium untuk kartu (Slate 800) */
+    --vion-text-dark: #f1f5f9;   /* Putih keabuan untuk teks utama */
+    --vion-text-muted: #94a3b8;  /* Abu terang untuk teks sekunder */
+    --vion-primary: #94a9d4;     /* Biru pastel untuk dark mode */
 }
 
-/* Gaya Kartu Kustom (seperti di aplikasi aset) */
-.vion-card {
-  background-color: var(--vion-white);
-  border-radius: 25px; /* Lengkungan besar */
-  border: none;
-  box-shadow: 0 10px 30px rgba(129, 153, 198, 0.08); /* Shadow halus biru */
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+/* --- HERO SECTION & GRADIENTS --- */
+.vion-hero {
+    position: relative;
+    overflow: hidden;
+    transition: background 0.5s ease-in-out;
 }
 
-.vion-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 15px 40px rgba(129, 153, 198, 0.15);
-}
-
-/* Gaya Tombol Kustom */
-.btn-vion {
-  background-color: var(--vion-primary);
-  color: var(--vion-white);
-  border-radius: 12px;
-  padding: 12px 24px;
-  border: none;
-  font-weight: 600;
-  transition: all 0.3s ease;
-}
-
-.btn-vion:hover {
-  background-color: var(--vion-primary-dark);
-  color: var(--vion-white);
-  transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(129, 153, 198, 0.3);
-}
-
-/* Gaya Badge Kustom */
-.vion-badge {
-  background-color: #ffbb00;
-  color: var(--vion-text-muted);
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 1px;
-  text-uppercase: uppercase;
-  padding: 8px 16px;
-}
-
-/* Gaya Section Jadwal */
-.jadwal-list-item {
-  background-color: transparent;
-  border-color: #EAEFF5;
-  color: var(--vion-text-muted);
-  display: flex;
-  justify-content: space-between;
-  padding: 12px 0;
-}
-
-/* Utilitas */
-.text-vion-title {
-  color: var(--vion-primary-dark);
-}
-
+/* Gradien Mode Terang (Default) */
 .bg-vion-gradient {
-  background: radial-gradient(circle at top right, #E5EEF9 0%, var(--vion-bg-light) 60%);
+    background: linear-gradient(135deg, #f0f7ff 0%, #ffffff 100%) !important;
 }
 
-.vion-accordion .accordion-button:not(.collapsed) {
-  background-color: #f0f4f9;
-  color: var(--vion-primary);
-  box-shadow: none;
+/* Gradien Mode Gelap */
+[data-bs-theme='dark'] .bg-vion-gradient {
+    background: radial-gradient(circle at top right, #1e293b 0%, #0f172a 70%) !important;
 }
 
-.vion-accordion .accordion-button:focus {
-  box-shadow: none;
-  border-color: rgba(0,0,0,.125);
+/* Dekorasi Lingkaran Hero */
+.vion-hero::before {
+    content: "";
+    position: absolute;
+    top: -10%;
+    right: -5%;
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, rgba(129, 153, 198, 0.1) 0%, transparent 70%);
+    border-radius: 50%;
+    z-index: 0;
 }
 
-.vion-accordion .accordion-item {
-  border: 1px solid #eee !important;
+/* --- GLOBAL TEXT & COMPONENTS --- */
+.text-vion-title {
+    color: inherit; /* Mengikuti context body/card */
+    transition: color 0.3s ease;
 }
 
-.card-hover {
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  cursor: pointer;
+[data-bs-theme='dark'] body {
+    background-color: var(--vion-bg-light);
+    color: var(--vion-text-dark);
 }
 
-.card-hover:hover {
-  transform: translateY(-10px);
-  box-shadow: 0 15px 30px rgba(0,0,0,0.1) !important;
+/* --- KARTU (CARD) --- */
+.vion-card {
+    transition: all 0.3s ease;
 }
 
-.article-content {
-  white-space: pre-line; /* Agar enter/baris baru di teks terbaca */
+[data-bs-theme='dark'] .vion-card {
+    background-color: var(--vion-white) !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3) !important;
+    border: 1px solid rgba(255, 255, 255, 0.05) !important;
+}
+
+/* --- BADGE KUNING TELUR (YOLK) --- */
+/* Menggunakan !important agar tidak ditimpa Bootstrap dark mode */
+.vion-badge {
+    background-color: var(--vion-yolk) !important;
+    color: #000000 !important;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 8px 16px;
+    border-radius: 50px;
+    border: none;
+    display: inline-block;
+    box-shadow: 0 2px 10px rgba(255, 184, 0, 0.2);
+}
+
+[data-bs-theme="dark"] .vion-badge {
+    background-color: var(--vion-yolk) !important;
+    color: #000000 !important;
+}
+
+/* --- ACCORDION JADWAL --- */
+[data-bs-theme='dark'] .vion-accordion .accordion-item {
+    background-color: #1e293b;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+[data-bs-theme='dark'] .vion-accordion .accordion-button {
+    background-color: #1e293b;
+    color: var(--vion-text-dark);
+}
+
+[data-bs-theme='dark'] .vion-accordion .accordion-button:not(.collapsed) {
+    background-color: #334155;
+    color: var(--vion-primary);
+}
+
+/* --- EFEK HOVER LAYANAN (SERVICE CARDS) --- */
+.vion-service-card {
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+    z-index: 1;
+}
+
+.vion-service-card:hover {
+    transform: translateY(-5px);
+}
+
+.vion-service-card .service-content {
+    transition: filter 0.3s ease, opacity 0.3s ease;
+}
+
+.vion-service-card:hover .service-content {
+    filter: blur(4px);
+    opacity: 0.2;
+}
+
+.vion-service-card .service-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(var(--bs-body-bg-rgb), 0.7); 
+    backdrop-filter: blur(2px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: 3;
+    padding: 15px;
+}
+
+.vion-service-card:hover .service-overlay {
+    opacity: 1;
+}
+
+.vion-service-card .overlay-text {
+    background-color: #1a1a1a; /* Hitam di Light Mode */
+    color: #ffffff !important;
+    font-weight: 700;
+    font-size: 0.7rem; 
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 8px 16px;
+    border-radius: 50px;
+    transform: scale(0.8);
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+
+.vion-service-card:hover .overlay-text {
+    transform: scale(1);
+}
+
+[data-bs-theme="dark"] .vion-service-card .overlay-text {
+    background-color: #ffffff; /* Putih di Dark Mode */
+    color: #1a1a1a !important;
+}
+
+/* --- UTILITIES --- */
+.w-fit-content {
+    width: fit-content;
 }

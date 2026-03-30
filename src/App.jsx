@@ -1,13 +1,13 @@
 // src/App.jsx
-// 1. IMPORT REACT & HOOKS
-import React, { useState } from 'react';
+// 1. IMPORT REACT & HOOKS (DIPERBAIKI: Menambahkan useEffect agar tidak blank)
+import React, { useState, useEffect } from 'react';
 
 // 2. IMPORT CSS (Bootstrap & Icons)
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import './index.css';
 
-// 3. IMPORT BOOTSTRAP COMPONENTS (Gabung semua di sini)
+// 3. IMPORT BOOTSTRAP COMPONENTS
 import { Modal, Accordion, Carousel } from 'react-bootstrap';
 
 // 4. IMPORT ASSETS (Logo & Layanan)
@@ -24,12 +24,25 @@ import imgLayanan9 from './assets/layan-9.png';
 import imgLayanan10 from './assets/layan-10.png';
 
 const App = () => {
-  // --- SEMUA STATE & HANDLER HARUS DI SINI (DALAM APP) ---
+  // --- SEMUA STATE & HANDLER ---
   const [show, setShow] = useState(false);
   const [selectedParent, setSelectedParent] = useState(null);
-  
+  const [isDarkMode, setIsDarkMode] = useState(false);
   const [showArticle, setShowArticle] = useState(false);
   const [selectedArticle, setSelectedArticle] = useState(null);
+
+  const toggleTheme = () => {
+    setIsDarkMode(!isDarkMode);
+  };
+
+  // LOGIKA DARK MODE (Mengubah atribut di tag HTML)
+  useEffect(() => {
+    if (isDarkMode) {
+      document.documentElement.setAttribute('data-bs-theme', 'dark');
+    } else {
+      document.documentElement.setAttribute('data-bs-theme', 'light');
+    }
+  }, [isDarkMode]);
 
   const handleClose = () => setShow(false);
   const handleShow = (parent) => {
@@ -42,7 +55,7 @@ const App = () => {
     setShowArticle(true);
   };
 
-  // Struktur Data: 5 Induk Layanan dengan Children
+  // Struktur Data Layanan
   const serviceGroups = [
     {
       id: 1,
@@ -94,59 +107,93 @@ const App = () => {
   return (
     <div className="vion-wrapper">
       {/* NAVBAR */}
-      <nav className="navbar navbar-expand-lg sticky-top bg-white shadow-sm py-3">
+      <nav className="navbar navbar-expand-lg shadow-sm sticky-top bg-body">
         <div className="container">
-          <a className="navbar-brand fw-bold d-flex align-items-center text-vion-title" href="#">
-            <img src={logoVion} alt="Logo" height="40" className="me-3" />
-            KLINIK VION
-          </a>
-          <div className="ms-auto d-none d-lg-block">
-             <span className="text-muted small">Mataram Dental Care Specialist</span>
+          <a className="navbar-brand fw-bold text-vion-title" href="#">KLINIK VION</a>
+          
+          {/* Tombol Toggle Theme */}
+          <div className="ms-auto d-flex align-items-center">
+            <button 
+              className="btn btn-link nav-link me-3 border-0 text-decoration-none" 
+              onClick={toggleTheme}
+            >
+              {isDarkMode ? (
+                <i className="bi bi-sun-fill text-warning fs-5"></i>
+              ) : (
+                <i className="bi bi-moon-stars-fill text-primary fs-5"></i>
+              )}
+            </button>
+
+            <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+              <span className="navbar-toggler-icon"></span>
+            </button>
+          </div>
+          
+          <div className="collapse navbar-collapse" id="navbarNav">
+            <ul className="navbar-nav ms-auto">
+              <li className="nav-item"><a className="nav-link" href="#about">Tentang Kami</a></li>
+              <li className="nav-item"><a className="nav-link" href="#layanan">Layanan</a></li>
+              <li className="nav-item"><a className="nav-link" href="#edukasi">Edukasi</a></li>
+              <li className="nav-item"><a className="nav-link" href="#jadwal">Jadwal</a></li>
+            </ul>
           </div>
         </div>
       </nav>
 
       {/* HERO SECTION */}
-      <header className="hero-section py-5 bg-vion-gradient" style={{ minHeight: '80vh', display: 'flex', alignItems: 'center' }}>
+      <header className="vion-hero py-5 bg-vion-gradient" style={{ minHeight: '80vh', display: 'flex', alignItems: 'center' }}>
         <div className="container">
           <div className="row justify-content-center">
             <div className="col-lg-8 text-center">
-              <div className="vion-card p-5 shadow-lg border-0 bg-white bg-opacity-75" 
-                  style={{ borderRadius: '2rem', backdropFilter: 'blur(10px)' }}>
+              
+              {/* KARTU GLASSMORPHISM */}
+              <div className="vion-card p-5 shadow-lg border-0 bg-body bg-opacity-50" 
+                  style={{ 
+                    borderRadius: '2rem', 
+                    backdropFilter: 'blur(10px)',
+                    WebkitBackdropFilter: 'blur(10px)', // Support untuk Safari
+                    border: '1px solid rgba(255,255,255,0.1)' 
+                  }}>
                 
-                {/* Logo dengan animasi halus */}
                 <div className="mb-4">
                   <img 
                     src={logoVion} 
                     alt="Logo Klinik Vion" 
                     className="img-fluid" 
-                    style={{ maxHeight: '180px', filter: 'drop-shadow(0 5px 15px rgba(0,0,0,0.1))' }} 
+                    style={{ 
+                      maxHeight: '180px', 
+                      filter: 'drop-shadow(0 5px 15px rgba(0,0,0,0.1))' 
+                    }} 
                   />
                 </div>
 
-                {/* Judul & Deskripsi */}
-                <h1 className="display-4 fw-bold mb-1 text-dark" style={{ letterSpacing: '-1px' }}>
+                {/* PERBAIKAN: Tambahkan text-vion-title agar teks KLINIK VION adaptif */}
+                <h1 className="display-4 fw-bold mb-1 text-vion-title" style={{ letterSpacing: '-1px' }}>
                   KLINIK VION
                 </h1>
+                
                 <p className="lead fw-medium text-primary mb-4">
                   drg. Ovie — drg. Nova
                 </p>
                 
                 <div className="mb-5">
-                  <span className="badge rounded-pill bg-light text-dark px-3 py-2 border">
+                  {/* PERBAIKAN: bg-body-secondary dan text-body agar kontras di kedua mode */}
+                  <span className="badge rounded-pill bg-body-secondary text-body px-3 py-2 border border-light-subtle">
                     <i className="bi bi-geo-alt-fill text-danger me-2"></i>
                     Klinik Gigi Mataram
                   </span>
                 </div>
 
-                {/* Button Reservasi WhatsApp */}
                 <div className="d-grid gap-2 d-sm-flex justify-content-sm-center">
                   <a 
-                    href="https://wa.me/6281936780761" // Ganti dengan nomor WhatsApp klinik
+                    href="https://wa.me/6281936780761" 
                     target="_blank" 
                     rel="noopener noreferrer"
-                    className="btn btn-success btn-lg px-5 py-3 fw-bold shadow-sm d-flex align-items-center justify-content-center transition-all"
-                    style={{ borderRadius: '50px' }}
+                    className="btn btn-success btn-lg px-5 py-3 fw-bold shadow-sm d-flex align-items-center justify-content-center border-0"
+                    style={{ 
+                      borderRadius: '50px',
+                      backgroundColor: '#25D366' // Warna WhatsApp yang paten
+                    }}
                   >
                     <i className="bi bi-whatsapp me-3 fs-4"></i>
                     Reservasi Sekarang
@@ -160,7 +207,7 @@ const App = () => {
       </header>
 
       {/* SECTION TENTANG KAMI */}
-      <section id="about" className="py-5 bg-white">
+      <section id="about" className="py-5 bg-body"> {/* PERBAIKAN: bg-white jadi bg-body */}
         <div className="container py-4">
           <div className="text-center mb-5">
             <span className="badge vion-badge mb-2">ABOUT US</span>
@@ -205,16 +252,19 @@ const App = () => {
               <div className="row g-4">
                 <div className="col-md-8">
                   <h4 className="fw-bold mb-3 text-vion-title">Klinik Gigi Profesional di Mataram</h4>
-                  <p className="text-secondary" style={{ textAlign: 'justify' }}>
+                  {/* PERBAIKAN: text-secondary terkadang terlalu gelap di dark mode, 
+                      Bootstrap akan menyesuaikan otomatis jika kita biarkan atau pakai opacity */}
+                  <p className="text-body-secondary" style={{ textAlign: 'justify' }}>
                     <strong>KLINIK VION drg. Ovie - drg. Nova</strong> melayani dengan sepenuh hati sebagai Klinik Gigi Mataram yang menghadirkan perawatan gigi profesional dengan teknologi modern dan tenaga medis berpengalaman. Sebagai pilihan tepat bagi Anda yang mencari Dokter Gigi terdekat.
                   </p>
-                  <p className="text-secondary" style={{ textAlign: 'justify' }}>
-                    Kami menyediakan layanan lengkap seperti tambal gigi, scaling, behel gigi, perawatan gigi berlubang, hingga perawatan estetika gigi untuk senyum yang lebih sehat dan percaya diri. Dental Clinic ini berkomitmen memberikan pelayanan terbaik dengan suasana nyaman, prosedur higienis, dan hasil memuaskan bagi setiap pasien. VION CLINIC drg. Ovie - drg. Nova siap menjadi solusi perawatan gigi terpercaya untuk Anda dan keluarga di Mataram.
+                  <p className="text-body-secondary" style={{ textAlign: 'justify' }}>
+                    Kami menyediakan layanan lengkap seperti tambal gigi, scaling, behel gigi, perawatan gigi berlubang, hingga perawatan estetika gigi untuk senyum yang lebih sehat dan percaya diri. Dental Clinic ini berkomitmen memberikan pelayanan terbaik dengan suasana nyaman, prosedur higienis, dan hasil memuaskan bagi setiap pasien. KLINIK VION drg. Ovie - drg. Nova siap menjadi solusi perawatan gigi terpercaya untuk Anda dan keluarga di Mataram.
                   </p>
                 </div>
                 <div className="col-md-4">
-                  <div className="p-4 bg-light rounded-4">
-                    <h6 className="fw-bold mb-3">Keunggulan</h6>
+                  {/* PERBAIKAN: bg-light jadi bg-body-tertiary agar ikut gelap */}
+                  <div className="p-4 bg-body-tertiary rounded-4 border border-light-subtle">
+                    <h6 className="fw-bold mb-3 text-vion-title">Keunggulan</h6>
                     <ul className="list-unstyled mb-0">
                       <li className="mb-2 small"><i className="bi bi-check-circle-fill text-primary me-2"></i>Tenaga Medis Ahli</li>
                       <li className="mb-2 small"><i className="bi bi-check-circle-fill text-primary me-2"></i>Peralatan Modern</li>
@@ -233,43 +283,59 @@ const App = () => {
       <section id="layanan" className="container py-5">
         <div className="text-center mb-5">
           <span className="badge vion-badge mb-2">LAYANAN KAMI</span>
-          <h2 className="fw-bold">Pilih Kategori Perawatan</h2>
+          <h2 className="fw-bold text-vion-title">Pilih Kategori Perawatan</h2>
         </div>
 
         <div className="row g-4 justify-content-center">
           {serviceGroups.map((group) => (
             <div className="col-md-4 col-lg-2" key={group.id} style={{minWidth: '200px'}}>
+              
+              {/* PERBAIKAN: Hapus style={{transition...}}, tambahkan class 'vion-service-card' */}
               <div 
-                className="vion-card text-center p-4 h-100 clickable-service"
+                className="vion-card vion-service-card text-center p-4 h-100 bg-body-tertiary border border-light-subtle shadow-sm"
                 onClick={() => handleShow(group)}
               >
-                <div className="icon-wrapper mb-3 mx-auto">
-                  <i className={`bi ${group.icon} fs-1 text-primary`}></i>
+                {/* Konten Utama (Icon & Judul) */}
+                <div className="service-content">
+                  <div className="icon-wrapper mb-3 mx-auto">
+                    <i className={`bi ${group.icon} fs-1 text-primary`}></i>
+                  </div>
+                  <h6 className="fw-bold small mb-0 text-vion-title">{group.title}</h6>
                 </div>
-                <h6 className="fw-bold small mb-0 text-vion-title">{group.title}</h6>
+
+                {/* Overlay Muncul Saat Hover */}
+                <div className="service-overlay">
+                  <div className="overlay-text">
+                    Lihat Layanan <i className="bi bi-arrow-right ms-1"></i>
+                  </div>
+                </div>
               </div>
+
             </div>
           ))}
         </div>
       </section>
 
-      {/* MODAL POP-UP (Untuk Menampilkan Children) */}
+      {/* MODAL POP-UP */}
       <Modal show={show} onHide={handleClose} centered size="lg" scrollable>
         {selectedParent && (
           <>
-            <Modal.Header closeButton className="border-0 px-4 pt-4">
+            {/* PERBAIKAN: Modal Header & Body di Bootstrap 5 otomatis menyesuaikan bg-body */}
+            <Modal.Header closeButton className="border-0 px-4 pt-4 bg-body">
               <Modal.Title className="fw-bold text-vion-title">
                 <i className={`bi ${selectedParent.icon} me-2 text-primary`}></i>
                 {selectedParent.title}
               </Modal.Title>
             </Modal.Header>
-            <Modal.Body className="px-4 pb-5">
-              <p className="text-muted mb-4 small">Berikut adalah rincian layanan dalam kategori ini:</p>
+            
+            <Modal.Body className="px-4 pb-5 bg-body">
+              <p className="text-body-secondary mb-4 small">Berikut adalah rincian layanan dalam kategori ini:</p>
               
               <div className="row g-4">
                 {selectedParent.children.map((child, index) => (
                   <div className="col-12" key={index}>
-                    <div className="vion-card p-3 border border-light bg-light shadow-none">
+                    {/* PERBAIKAN: Mengganti bg-light menjadi bg-body-secondary dan border-light menjadi border-light-subtle */}
+                    <div className="vion-card p-3 border border-light-subtle bg-body-secondary shadow-none">
                       <div className="row align-items-center">
                         <div className="col-md-4 mb-3 mb-md-0 text-center">
                           <img 
@@ -280,8 +346,9 @@ const App = () => {
                           />
                         </div>
                         <div className="col-md-8">
-                          <h5 className="fw-bold mb-2">{child.name}</h5>
-                          <p className="text-secondary small mb-0" style={{lineHeight: '1.6'}}>
+                          {/* text-vion-title agar warna judul tetap konsisten */}
+                          <h5 className="fw-bold mb-2 text-vion-title">{child.name}</h5>
+                          <p className="text-body-secondary small mb-0" style={{lineHeight: '1.6'}}>
                             {child.desc}
                           </p>
                         </div>
@@ -291,7 +358,7 @@ const App = () => {
                 ))}
               </div>
               
-              <div className="mt-4 pt-3 border-top text-center">
+              <div className="mt-4 pt-3 border-top text-center border-light-subtle">
                 <a 
                   href="https://wa.me/6281936780761" 
                   target="_blank" 
@@ -299,11 +366,8 @@ const App = () => {
                   className="btn w-100 py-3 rounded-4 shadow-sm text-white fw-bold d-flex align-items-center justify-content-center text-decoration-none"
                   style={{ 
                     backgroundColor: '#25D366', 
-                    border: 'none',
-                    transition: 'background-color 0.3s ease'
+                    border: 'none'
                   }}
-                  onMouseOver={(e) => e.target.style.backgroundColor = '#128C7E'}
-                  onMouseOut={(e) => e.target.style.backgroundColor = '#25D366'}
                 >
                   <i className="bi bi-whatsapp me-2 fs-5"></i> 
                   Tanya Biaya & Jadwal via WhatsApp
@@ -315,7 +379,7 @@ const App = () => {
       </Modal>
 
       {/* SECTION EDUKASI & UPDATE */}
-      <section id="edukasi" className="py-5 bg-light">
+      <section id="edukasi" className="py-5 bg-body-tertiary"> {/* PERBAIKAN: bg-light -> bg-body-tertiary */}
         <div className="container py-4">
           <div className="text-center mb-5">
             <span className="badge vion-badge mb-2">DENTAL TIPS</span>
@@ -324,6 +388,7 @@ const App = () => {
 
           <div className="row g-4">
             {[
+              // ... data artikel tetap sama ...
               {
                 id: 1,
                 title: "Penyebab Gigi Sensitif Setelah Scaling",
@@ -350,17 +415,18 @@ const App = () => {
               }
             ].map((post) => (
               <div className="col-md-4" key={post.id}>
-                <div className="vion-card h-100 shadow-sm border-0 bg-white overflow-hidden card-hover">
+                {/* PERBAIKAN: bg-white -> bg-body */}
+                <div className="vion-card h-100 shadow-sm border border-light-subtle bg-body overflow-hidden card-hover">
                   <div style={{ height: '200px', overflow: 'hidden' }}>
                     <img src={post.image} className="w-100 h-100 object-fit-cover" alt={post.title} />
                   </div>
                   <div className="p-4">
                     <div className="d-flex justify-content-between mb-2">
                       <small className="text-primary fw-bold">Klinik Vion</small>
-                      <small className="text-muted">{post.date}</small>
+                      <small className="text-body-secondary">{post.date}</small>
                     </div>
-                    <h5 className="fw-bold mb-3 lh-base">{post.title}</h5>
-                    <p className="text-secondary small mb-4">{post.preview}</p>
+                    <h5 className="fw-bold mb-3 lh-base text-vion-title">{post.title}</h5>
+                    <p className="text-body-secondary small mb-4">{post.preview}</p>
                     <button 
                       onClick={() => handleOpenArticle(post)}
                       className="btn btn-outline-primary btn-sm rounded-pill px-3"
@@ -379,8 +445,9 @@ const App = () => {
       <Modal show={showArticle} onHide={() => setShowArticle(false)} size="lg" centered scrollable>
         {selectedArticle && (
           <>
-            <Modal.Header closeButton className="border-0 pb-0"></Modal.Header>
-            <Modal.Body className="px-4 pb-5">
+            {/* PERBAIKAN: Tambah bg-body agar header tidak putih */}
+            <Modal.Header closeButton className="border-0 pb-0 bg-body"></Modal.Header>
+            <Modal.Body className="px-4 pb-5 bg-body">
               <img 
                 src={selectedArticle.image} 
                 className="w-100 rounded-4 mb-4 shadow-sm" 
@@ -390,18 +457,19 @@ const App = () => {
               <div className="px-md-3">
                 <span className="badge bg-primary-subtle text-primary mb-2">Edukasi Gigi</span>
                 <h3 className="fw-bold text-vion-title mb-3">{selectedArticle.title}</h3>
-                <p className="text-muted small mb-4 border-bottom pb-2">
-                   <i className="bi bi-calendar-event me-2"></i>Diterbitkan pada {selectedArticle.date}
+                <p className="text-body-secondary small mb-4 border-bottom pb-2 border-light-subtle">
+                  <i className="bi bi-calendar-event me-2"></i>Diterbitkan pada {selectedArticle.date}
                 </p>
-                <div className="article-content text-secondary" style={{ lineHeight: '1.8', textAlign: 'justify' }}>
+                <div className="article-content text-body-secondary" style={{ lineHeight: '1.8', textAlign: 'justify' }}>
                   {selectedArticle.content}
                 </div>
                 
-                <div className="mt-5 p-4 bg-light rounded-4 d-flex align-items-center justify-content-between">
-                   <p className="mb-0 small fw-bold">Ingin konsultasi lebih lanjut tentang hal ini?</p>
-                   <a href="https://wa.me/6281936780761" target="_blank" className="btn btn-success btn-sm rounded-pill px-3">
+                {/* PERBAIKAN: bg-light -> bg-body-secondary & border */}
+                <div className="mt-5 p-4 bg-body-secondary border border-light-subtle rounded-4 d-flex align-items-center justify-content-between">
+                  <p className="mb-0 small fw-bold">Ingin konsultasi lebih lanjut?</p>
+                  <a href="https://wa.me/6281936780761" target="_blank" className="btn btn-success btn-sm rounded-pill px-3">
                       <i className="bi bi-whatsapp me-2"></i>Tanya Dokter
-                   </a>
+                  </a>
                 </div>
               </div>
             </Modal.Body>
@@ -410,33 +478,38 @@ const App = () => {
       </Modal>
 
       {/* SECTION FAQ */}
-      <section id="faq" className="bg-light py-5">
+      <section id="faq" className="bg-body-tertiary py-5"> {/* PERBAIKAN: bg-light -> bg-body-tertiary */}
         <div className="container py-4">
           <div className="text-center mb-5">
             <span className="badge vion-badge mb-2">TANYA JAWAB</span>
-            <h2 className="fw-bold">Pertanyaan Umum (FAQ)</h2>
+            <h2 className="fw-bold text-vion-title">Pertanyaan Umum (FAQ)</h2>
           </div>
           <div className="row justify-content-center">
             <div className="col-lg-8">
               <Accordion defaultActiveKey="0" className="vion-accordion shadow-sm">
-                <Accordion.Item eventKey="0" className="border-0 mb-3 rounded-4 overflow-hidden">
+                
+                <Accordion.Item eventKey="0" className="border-0 mb-3 rounded-4 overflow-hidden shadow-sm">
                   <Accordion.Header className="fw-bold">Apakah harus reservasi sebelum datang?</Accordion.Header>
-                  <Accordion.Body className="text-secondary">
+                  {/* PERBAIKAN: text-secondary -> text-body-secondary */}
+                  <Accordion.Body className="text-body-secondary bg-body">
                     Sangat disarankan untuk melakukan reservasi melalui WhatsApp minimal H-1 untuk memastikan kuota dokter tersedia dan meminimalisir waktu tunggu di klinik.
                   </Accordion.Body>
                 </Accordion.Item>
-                <Accordion.Item eventKey="1" className="border-0 mb-3 rounded-4 overflow-hidden">
+
+                <Accordion.Item eventKey="1" className="border-0 mb-3 rounded-4 overflow-hidden shadow-sm">
                   <Accordion.Header className="fw-bold">Apakah Klinik Vion menerima pasien anak?</Accordion.Header>
-                  <Accordion.Body className="text-secondary">
+                  <Accordion.Body className="text-body-secondary bg-body">
                     Ya, kami memiliki layanan Perawatan Gigi Anak dengan pendekatan yang ramah agar anak-anak merasa nyaman dan tidak takut saat diperiksa.
                   </Accordion.Body>
                 </Accordion.Item>
-                <Accordion.Item eventKey="2" className="border-0 mb-3 rounded-4 overflow-hidden">
+
+                <Accordion.Item eventKey="2" className="border-0 mb-3 rounded-4 overflow-hidden shadow-sm">
                   <Accordion.Header className="fw-bold">Berapa biaya untuk Scaling atau Pasang Behel?</Accordion.Header>
-                  <Accordion.Body className="text-secondary">
+                  <Accordion.Body className="text-body-secondary bg-body">
                     Biaya perawatan bervariasi tergantung kondisi gigi. Anda bisa berkonsultasi langsung dengan admin kami via WhatsApp untuk mendapatkan estimasi harga terbaru.
                   </Accordion.Body>
                 </Accordion.Item>
+
               </Accordion>
             </div>
           </div>
@@ -444,7 +517,7 @@ const App = () => {
       </section>
 
       {/* SECTION ULASAN PELANGGAN */}
-      <section id="ulasan" className="bg-white py-5">
+      <section id="ulasan" className="bg-body py-5"> {/* PERBAIKAN: bg-white -> bg-body */}
         <div className="container py-4">
           <div className="row align-items-center mb-5">
             <div className="col-md-6 text-center text-md-start">
@@ -452,18 +525,19 @@ const App = () => {
               <h2 className="fw-bold text-vion-title">Apa Kata Pasien Kami?</h2>
             </div>
             <div className="col-md-6 text-center text-md-end">
-              <div className="d-inline-block p-3 bg-light rounded-4 border">
+              {/* PERBAIKAN: bg-light -> bg-body-tertiary & border-light-subtle */}
+              <div className="d-inline-block p-3 bg-body-tertiary rounded-4 border border-light-subtle shadow-sm">
                 <div className="d-flex align-items-center justify-content-center">
-                   <i className="bi bi-google text-primary me-2 fs-5"></i>
-                   <span className="fw-bold me-2 fs-5">4.8</span>
-                   <div className="text-warning me-2">
+                  <i className="bi bi-google text-primary me-2 fs-5"></i>
+                  <span className="fw-bold me-2 fs-5">4.8</span>
+                  <div className="text-warning me-2">
                       <i className="bi bi-star-fill"></i>
                       <i className="bi bi-star-fill"></i>
                       <i className="bi bi-star-fill"></i>
                       <i className="bi bi-star-fill"></i>
                       <i className="bi bi-star-fill"></i>
-                   </div>
-                   <span className="text-muted small">(112 Ulasan)</span>
+                  </div>
+                  <span className="text-body-secondary small">(112 Ulasan)</span>
                 </div>
               </div>
             </div>
@@ -494,32 +568,34 @@ const App = () => {
               }
             ].map((item, idx) => (
               <div className="col-md-4" key={idx}>
-                <div className="vion-card p-4 border border-light shadow-sm h-100 bg-white">
+                {/* PERBAIKAN: bg-white -> bg-body-tertiary & border-light-subtle */}
+                <div className="vion-card p-4 border border-light-subtle shadow-sm h-100 bg-body-tertiary card-hover">
                   <div className="d-flex align-items-center mb-3">
                     <div 
-                      className="rounded-circle me-3 d-flex align-items-center justify-content-center text-white fw-bold" 
+                      className="rounded-circle me-3 d-flex align-items-center justify-content-center text-white fw-bold shadow-sm" 
                       style={{ width: '45px', height: '45px', backgroundColor: item.color }}
                     >
                       {item.name.charAt(0)}
                     </div>
                     <div>
-                      <h6 className="fw-bold mb-0">{item.name}</h6>
-                      <small className="text-muted" style={{fontSize: '11px'}}>{item.role}</small>
+                      <h6 className="fw-bold mb-0 text-vion-title">{item.name}</h6>
+                      <small className="text-body-secondary" style={{fontSize: '11px'}}>{item.role}</small>
                     </div>
                   </div>
                   <div className="text-warning mb-2 small">
-                     <i className="bi bi-star-fill"></i>
-                     <i className="bi bi-star-fill"></i>
-                     <i className="bi bi-star-fill"></i>
-                     <i className="bi bi-star-fill"></i>
-                     <i className="bi bi-star-fill"></i>
+                    <i className="bi bi-star-fill"></i>
+                    <i className="bi bi-star-fill"></i>
+                    <i className="bi bi-star-fill"></i>
+                    <i className="bi bi-star-fill"></i>
+                    <i className="bi bi-star-fill"></i>
                   </div>
-                  <p className="small text-secondary mb-3" style={{lineHeight: '1.6', minHeight: '80px'}}>
+                  <p className="small text-body-secondary mb-3" style={{lineHeight: '1.6', minHeight: '80px'}}>
                     "{item.review}"
                   </p>
-                  <div className="d-flex justify-content-between align-items-center mt-auto">
-                    <span className="text-muted" style={{fontSize: '10px'}}>{item.time}</span>
-                    <i className="bi bi-google text-light small"></i>
+                  <div className="d-flex justify-content-between align-items-center mt-auto border-top pt-3 border-light-subtle">
+                    <span className="text-body-secondary" style={{fontSize: '10px'}}>{item.time}</span>
+                    {/* PERBAIKAN: text-light diganti ke text-body-secondary agar logo google terlihat di mode gelap */}
+                    <i className="bi bi-google text-body-secondary small opacity-50"></i>
                   </div>
                 </div>
               </div>
@@ -536,22 +612,23 @@ const App = () => {
       </section>
 
       {/* SECTION JADWAL PRAKTIK */}
-      <section id="jadwal" className="py-5 bg-light">
+      <section id="jadwal" className="py-5 bg-body-tertiary"> {/* PERBAIKAN: bg-light -> bg-body-tertiary */}
         <div className="container">
           <div className="row g-4">
             <div className="col-lg-5">
               <span className="badge vion-badge mb-2">OPENING HOURS</span>
               <h2 className="fw-bold text-vion-title mb-4">Jadwal Dokter Kami</h2>
-              <p className="text-secondary mb-4">
+              <p className="text-body-secondary mb-4">
                 Klik pada nama dokter untuk melihat jadwal praktik yang lebih spesifik. Kami memiliki tim dokter yang siap melayani Anda.
               </p>
               
-              <div className="vion-card p-4 border-0 shadow-sm bg-white rounded-4 mb-4">
+              {/* PERBAIKAN: bg-white -> bg-body */}
+              <div className="vion-card p-4 border border-light-subtle shadow-sm bg-body rounded-4 mb-4">
                 <div className="d-flex align-items-center text-primary mb-2">
                   <i className="bi bi-info-circle-fill me-2"></i>
                   <span className="fw-bold small">Pendaftaran Pasien</span>
                 </div>
-                <p className="small text-muted mb-0">
+                <p className="small text-body-secondary mb-0">
                   Sesi Pagi: 08.30 - 12.30 (Close regis 12.00)<br/>
                   Sesi Malam: 18.00 - 21.30 (Close regis 21.00)
                 </p>
@@ -561,6 +638,7 @@ const App = () => {
             <div className="col-lg-7">
               <Accordion defaultActiveKey="0" className="vion-accordion shadow-sm">
                 {[
+                  // ... data dokter tetap sama ...
                   {
                     id: "0",
                     name: "Drg. Ovie Lestya Nurdiana, M.Kes",
@@ -595,30 +673,34 @@ const App = () => {
                   <Accordion.Item eventKey={doc.id} key={doc.id} className="border-0 mb-3 rounded-4 overflow-hidden shadow-sm">
                     <Accordion.Header>
                       <div className="d-flex align-items-center">
-                         <div className={`bg-${doc.theme}-subtle p-2 rounded-3 me-3`}>
+                        <div className={`bg-${doc.theme}-subtle p-2 rounded-3 me-3`}>
                             <i className={`bi ${doc.icon} text-${doc.theme} fs-5`}></i>
-                         </div>
-                         <div>
-                            <h6 className="fw-bold mb-0">{doc.name}</h6>
-                            <small className="text-muted">{doc.role}</small>
-                         </div>
+                        </div>
+                        <div>
+                            <h6 className="fw-bold mb-0 text-vion-title">{doc.name}</h6>
+                            <small className="text-body-secondary">{doc.role}</small>
+                        </div>
                       </div>
                     </Accordion.Header>
-                    <Accordion.Body className="bg-white p-0">
+                    {/* PERBAIKAN: bg-white -> bg-body */}
+                    <Accordion.Body className="bg-body p-0">
                       <div className="table-responsive">
+                        {/* PERBAIKAN: Gunakan table-hover tanpa bg statis agar adaptif */}
                         <table className="table table-hover mb-0">
-                          <thead className="table-light">
+                          {/* PERBAIKAN: table-light -> table-dark (opsional manual) atau biarkan Bootstrap 
+                              menanganinya dengan bg-body-secondary pada thead */}
+                          <thead className="bg-body-secondary">
                             <tr>
                               <th className="ps-4 py-3 small fw-bold">HARI</th>
                               <th className="py-3 small fw-bold text-center">SESI PAGI</th>
                               <th className="py-3 small fw-bold text-center">SESI MALAM</th>
                             </tr>
                           </thead>
-                          <tbody>
+                          <tbody className="border-top-0">
                             {doc.schedule.map((row, idx) => (
-                              <tr key={idx}>
-                                <td className="ps-4 py-3 fw-medium">{row.hari}</td>
-                                <td className="py-3 text-center text-secondary small">{row.pagi || "-"}</td>
+                              <tr key={idx} className="align-middle">
+                                <td className="ps-4 py-3 fw-medium text-vion-title">{row.hari}</td>
+                                <td className="py-3 text-center text-body-secondary small">{row.pagi || "-"}</td>
                                 <td className={`py-3 text-center text-${doc.theme} small fw-semibold`}>{row.malam}</td>
                               </tr>
                             ))}
@@ -631,8 +713,8 @@ const App = () => {
               </Accordion>
               
               <div className="text-center mt-3">
-                <span className="badge bg-danger-subtle text-danger px-3 py-2 rounded-pill small">
-                   <i className="bi bi-calendar-x me-2"></i>Minggu & Tgl Merah: Libur
+                <span className="badge bg-danger-subtle text-danger px-3 py-2 rounded-pill small border border-danger-subtle">
+                  <i className="bi bi-calendar-x me-2"></i>Minggu & Tgl Merah: Libur
                 </span>
               </div>
             </div>
@@ -641,7 +723,7 @@ const App = () => {
       </section>
 
       {/* SECTION KONTAK & LOKASI */}
-      <section id="kontak" className="py-5 bg-white">
+      <section id="kontak" className="py-5 bg-body"> {/* PERBAIKAN: bg-white -> bg-body */}
         <div className="container">
           <div className="row g-4">
             {/* Info Kontak */}
@@ -651,32 +733,33 @@ const App = () => {
                 <h2 className="fw-bold text-vion-title mb-4">Hubungi Kami</h2>
                 
                 <div className="d-flex mb-4">
-                  <div className="bg-light p-3 rounded-4 me-3 text-primary">
+                  {/* PERBAIKAN: bg-light -> bg-body-secondary */}
+                  <div className="bg-body-secondary p-3 rounded-4 me-3 text-primary border border-light-subtle">
                     <i className="bi bi-geo-alt-fill fs-4"></i>
                   </div>
                   <div>
-                    <h6 className="fw-bold mb-1">Alamat Klinik</h6>
-                    <p className="small text-secondary mb-0">Jl. Airlangga No. 12, Punia, Kec. Mataram, Kota Mataram, NTB.</p>
+                    <h6 className="fw-bold mb-1 text-vion-title">Alamat Klinik</h6>
+                    <p className="small text-body-secondary mb-0">Jl. Airlangga No. 12, Punia, Kec. Mataram, Kota Mataram, NTB.</p>
                   </div>
                 </div>
 
                 <div className="d-flex mb-4">
-                  <div className="bg-light p-3 rounded-4 me-3 text-primary">
+                  <div className="bg-body-secondary p-3 rounded-4 me-3 text-primary border border-light-subtle">
                     <i className="bi bi-telephone fs-4"></i>
                   </div>
                   <div>
-                    <h6 className="fw-bold mb-1">Telepon</h6>
-                    <p className="small text-secondary mb-0">(0370) 6570713</p>
+                    <h6 className="fw-bold mb-1 text-vion-title">Telepon</h6>
+                    <p className="small text-body-secondary mb-0">(0370) 6570713</p>
                   </div>
                 </div>
 
                 <div className="d-flex mb-4">
-                  <div className="bg-light p-3 rounded-4 me-3 text-primary">
+                  <div className="bg-body-secondary p-3 rounded-4 me-3 text-primary border border-light-subtle">
                     <i className="bi bi-instagram fs-4"></i>
                   </div>
                   <div>
-                    <h6 className="fw-bold mb-1">Instagram Official</h6>
-                    <p className="small text-secondary mb-0">@klinikvion</p>
+                    <h6 className="fw-bold mb-1 text-vion-title">Instagram Official</h6>
+                    <p className="small text-body-secondary mb-0">@klinikvion</p>
                   </div>
                 </div>
 
@@ -701,12 +784,17 @@ const App = () => {
 
             {/* Google Maps Terintegrasi */}
             <div className="col-lg-8">
-              <div className="vion-card p-2 border-0 shadow-sm rounded-5 overflow-hidden bg-light" style={{ minHeight: '400px' }}>
+              {/* PERBAIKAN: bg-light -> bg-body-tertiary & filter grayscale untuk mode gelap (opsional) */}
+              <div className="vion-card p-2 border border-light-subtle shadow-sm rounded-5 overflow-hidden bg-body-tertiary" style={{ minHeight: '400px' }}>
                 <iframe 
                   src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3945.0434443905586!2d116.101732!3d-8.591823!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zOMKwMzUnMzAuNiJTIDExNiwwNicwNi4yIkU!5e0!3m2!1sid!2sid!4v1700000000000!5m2!1sid!2sid" 
                   width="100%" 
                   height="450" 
-                  style={{ border: 0, borderRadius: '25px' }} 
+                  style={{ 
+                      border: 0, 
+                      borderRadius: '25px',
+                      filter: 'var(--map-filter, none)' // Bisa ditambahkan CSS variable untuk meredupkan map di dark mode
+                  }} 
                   allowFullScreen="" 
                   loading="lazy" 
                   referrerPolicy="no-referrer-when-downgrade"
@@ -719,9 +807,13 @@ const App = () => {
       </section>
 
       {/* FOOTER SEDERHANA */}
-      <footer className="py-4 bg-white border-top text-center">
+      <footer className="py-4 bg-body border-top border-light-subtle text-center"> 
+        {/* PERBAIKAN: bg-white -> bg-body, tambahkan border-light-subtle agar garis pembatas tidak terlalu kontras */}
         <div className="container">
-          <p className="text-muted small mb-0">&copy; 2026 Klinik Vion Mataram. All rights reserved.</p>
+          {/* PERBAIKAN: text-muted -> text-body-secondary */}
+          <p className="text-body-secondary small mb-0">
+            &copy; 2026 Klinik Vion Mataram. All rights reserved.
+          </p>
         </div>
       </footer>
     </div>
