@@ -97,7 +97,7 @@ const App = () => {
       <nav className="navbar navbar-expand-lg sticky-top bg-white shadow-sm py-3">
         <div className="container">
           <a className="navbar-brand fw-bold d-flex align-items-center text-vion-title" href="#">
-            <img src={logoVion} alt="Logo" height="60" className="me-3" />
+            <img src={logoVion} alt="Logo" height="40" className="me-3" />
             KLINIK VION
           </a>
           <div className="ms-auto d-none d-lg-block">
